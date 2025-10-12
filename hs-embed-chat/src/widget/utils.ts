@@ -5,41 +5,149 @@ export interface ParsedEmbed {
   type: EmbedType;
 }
 
-export function classNames(...classes: (string | boolean | undefined)[]): string {
-  return classes.filter(Boolean).join(' ');
+/**
+ * Simple classNames combiner
+ * Filters out falsy values and joins with spaces
+ */
+export function cls(...parts: (string | boolean | undefined | null)[]): string {
+  return parts.filter(Boolean).join(' ');
 }
 
-export function formatTime(timestamp: string): string {
-  const date = new Date(timestamp);
-  return new Intl.DateTimeFormat('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  }).format(date);
+// Keep classNames as alias for backward compatibility
+export const classNames = cls;
+
+/**
+ * Format ISO timestamp to HH:MM format
+ * Returns empty string if timestamp is invalid or missing
+ */
+export function prettyTime(iso?: string): string {
+  if (!iso) return '';
+  
+  try {
+    const date = new Date(iso);
+    if (isNaN(date.getTime())) return '';
+    
+    return new Intl.DateTimeFormat('en-US', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    }).format(date);
+  } catch {
+    return '';
+  }
 }
 
-export function parseEmbedUrl(url: string): ParsedEmbed {
+// Keep formatTime for backward compatibility
+export const formatTime = prettyTime;
+
+/**
+ * Extract video ID from YouTube URL
+ */
+function extractYouTubeId(url: string): string | null {
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^"&?\/\s]{11})/,
+    /youtube\.com\/embed\/([^"&?\/\s]{11})/,
+    /youtube\.com\/v\/([^"&?\/\s]{11})/,
+  ];
+  
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  
+  return null;
+}
+
+/**
+ * Extract video ID from Vimeo URL
+ */
+function extractVimeoId(url: string): string | null {
+  const match = url.match(/vimeo\.com\/(?:.*\/)?(\d+)/);
+  return match ? match[1] : null;
+}
+
+/**
+ * Generate safe embed HTML for various URL types
+ * Returns iframe HTML string with security attributes
+ */
+export function getEmbedHTML(url: string): string {
   // YouTube
-  const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
-  const youtubeMatch = url.match(youtubeRegex);
-  if (youtubeMatch) {
+  const youtubeId = extractYouTubeId(url);
+  if (youtubeId) {
+    return `<iframe 
+      src="https://www.youtube-nocookie.com/embed/${youtubeId}" 
+      width="100%" 
+      height="100%" 
+      frameborder="0" 
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+      sandbox="allow-scripts allow-same-origin allow-presentation"
+    ></iframe>`;
+  }
+
+  // Vimeo
+  const vimeoId = extractVimeoId(url);
+  if (vimeoId) {
+    return `<iframe 
+      src="https://player.vimeo.com/video/${vimeoId}" 
+      width="100%" 
+      height="100%" 
+      frameborder="0" 
+      allow="autoplay; fullscreen; picture-in-picture" 
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+      sandbox="allow-scripts allow-same-origin allow-presentation"
+    ></iframe>`;
+  }
+
+  // Google Maps
+  if (url.includes('google.com/maps')) {
+    return `<iframe 
+      src="${url}" 
+      width="100%" 
+      height="100%" 
+      frameborder="0" 
+      style="border:0" 
+      allowfullscreen
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      sandbox="allow-scripts allow-same-origin"
+    ></iframe>`;
+  }
+
+  // Generic - most restrictive sandbox
+  return `<iframe 
+    src="${url}" 
+    width="100%" 
+    height="100%" 
+    frameborder="0" 
+    referrerpolicy="strict-origin-when-cross-origin"
+    sandbox="allow-scripts allow-same-origin"
+  ></iframe>`;
+}
+
+/**
+ * Parse embed URL and return type and processed URL
+ * @deprecated Use getEmbedHTML for generating embed markup
+ */
+export function parseEmbedUrl(url: string): ParsedEmbed {
+  const youtubeId = extractYouTubeId(url);
+  if (youtubeId) {
     return {
-      url: `https://www.youtube.com/embed/${youtubeMatch[1]}`,
+      url: `https://www.youtube-nocookie.com/embed/${youtubeId}`,
       type: 'youtube',
     };
   }
 
-  // Vimeo
-  const vimeoRegex = /vimeo\.com\/(?:.*\/)?(\d+)/;
-  const vimeoMatch = url.match(vimeoRegex);
-  if (vimeoMatch) {
+  const vimeoId = extractVimeoId(url);
+  if (vimeoId) {
     return {
-      url: `https://player.vimeo.com/video/${vimeoMatch[1]}`,
+      url: `https://player.vimeo.com/video/${vimeoId}`,
       type: 'vimeo',
     };
   }
 
-  // Google Maps
   if (url.includes('google.com/maps')) {
     return {
       url,
@@ -47,18 +155,20 @@ export function parseEmbedUrl(url: string): ParsedEmbed {
     };
   }
 
-  // Generic
   return {
     url,
     type: 'generic',
   };
 }
 
+/**
+ * Validate if string is a valid URL
+ */
 export function isValidUrl(string: string): boolean {
   try {
     new URL(string);
     return true;
-  } catch (_) {
+  } catch {
     return false;
   }
 }
