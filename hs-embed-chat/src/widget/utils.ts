@@ -1,10 +1,16 @@
-import { EmbedContent } from './types';
+export type EmbedType = 'youtube' | 'vimeo' | 'maps' | 'generic';
+
+export interface ParsedEmbed {
+  url: string;
+  type: EmbedType;
+}
 
 export function classNames(...classes: (string | boolean | undefined)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
-export function formatTime(date: Date): string {
+export function formatTime(timestamp: string): string {
+  const date = new Date(timestamp);
   return new Intl.DateTimeFormat('en-US', {
     hour: 'numeric',
     minute: '2-digit',
@@ -12,7 +18,7 @@ export function formatTime(date: Date): string {
   }).format(date);
 }
 
-export function parseEmbedUrl(url: string): EmbedContent {
+export function parseEmbedUrl(url: string): ParsedEmbed {
   // YouTube
   const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
   const youtubeMatch = url.match(youtubeRegex);

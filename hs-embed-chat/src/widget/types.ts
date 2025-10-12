@@ -1,34 +1,52 @@
-export type MessageType = 'text' | 'gallery' | 'embed' | 'catalogue';
+export type UserRole = "user" | "assistant" | "system";
 
-export interface CatalogueItem {
+export type BaseMessage = {
+  id: string;
+  role: UserRole;
+  timestamp?: string;
+};
+
+export type TextMessage = BaseMessage & {
+  type: "text";
+  text: string;
+};
+
+export type GalleryImage = { 
+  id: string; 
+  src: string; 
+  alt?: string; 
+};
+
+export type GalleryMessage = BaseMessage & {
+  type: "gallery";
+  title?: string;
+  images: GalleryImage[];
+};
+
+export type EmbedMessage = BaseMessage & {
+  type: "embed";
+  title?: string;
+  url: string; // youtube, vimeo, gmaps, any embeddable
+};
+
+export type CatalogueItem = {
   id: string;
   title: string;
+  subtitle?: string;
   description?: string;
-  imageUrl?: string;
-  price?: string;
-  link?: string;
-}
+  image?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+};
 
-export interface GalleryImage {
-  id: string;
-  url: string;
-  thumbnail?: string;
-  caption?: string;
-}
-
-export interface EmbedContent {
-  url: string;
-  type?: 'youtube' | 'vimeo' | 'maps' | 'generic';
+export type CatalogueMessage = BaseMessage & {
+  type: "catalogue";
   title?: string;
-}
+  items: CatalogueItem[];
+};
 
-export interface Message {
-  id: string;
-  type: MessageType;
-  sender: 'user' | 'assistant';
-  timestamp: Date;
-  content?: string;
-  gallery?: GalleryImage[];
-  embed?: EmbedContent;
-  catalogue?: CatalogueItem[];
-}
+export type Message =
+  | TextMessage
+  | GalleryMessage
+  | EmbedMessage
+  | CatalogueMessage;

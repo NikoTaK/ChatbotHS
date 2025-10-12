@@ -51,14 +51,14 @@ export function GalleryModal({ images, initialIndex, onClose }: GalleryModalProp
 
       <div className="relative max-w-5xl w-full" onClick={(e) => e.stopPropagation()}>
         <img
-          src={images[currentIndex].url}
-          alt={images[currentIndex].caption || `Image ${currentIndex + 1}`}
+          src={images[currentIndex].src}
+          alt={images[currentIndex].alt || `Image ${currentIndex + 1}`}
           className="w-full h-auto max-h-[80vh] object-contain rounded-lg"
         />
 
-        {images[currentIndex].caption && (
+        {images[currentIndex].alt && (
           <p className="text-white text-center mt-4 text-sm">
-            {images[currentIndex].caption}
+            {images[currentIndex].alt}
           </p>
         )}
 

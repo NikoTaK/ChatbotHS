@@ -19,7 +19,7 @@ export function HSChatWidget() {
   }, [messages]);
 
   const renderMessage = (message: typeof messages[0]) => {
-    const isUser = message.sender === 'user';
+    const isUser = message.role === 'user';
     
     return (
       <div key={message.id} className="flex gap-3 mb-4">

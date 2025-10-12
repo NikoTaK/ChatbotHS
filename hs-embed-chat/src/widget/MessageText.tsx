@@ -1,12 +1,12 @@
-import { Message } from './types';
+import { TextMessage } from './types';
 import { formatTime, classNames } from './utils';
 
 interface MessageTextProps {
-  message: Message;
+  message: TextMessage;
 }
 
 export function MessageText({ message }: MessageTextProps) {
-  const isUser = message.sender === 'user';
+  const isUser = message.role === 'user';
 
   return (
     <div className={classNames('flex flex-col', isUser ? 'items-end' : 'items-start')}>
@@ -18,11 +18,13 @@ export function MessageText({ message }: MessageTextProps) {
             : 'bg-indigo-50 text-hs-text'
         )}
       >
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.content}</p>
+        <p className="text-sm leading-relaxed whitespace-pre-wrap">{message.text}</p>
       </div>
-      <span className="text-xs text-hs-text-lighter mt-1 px-1">
-        {formatTime(message.timestamp)}
-      </span>
+      {message.timestamp && (
+        <span className="text-xs text-hs-text-lighter mt-1 px-1">
+          {formatTime(message.timestamp)}
+        </span>
+      )}
     </div>
   );
 }

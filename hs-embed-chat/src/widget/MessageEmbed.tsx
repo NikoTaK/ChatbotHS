@@ -1,27 +1,25 @@
-import { Message } from './types';
+import { EmbedMessage } from './types';
 import { formatTime, classNames, parseEmbedUrl } from './utils';
 
 interface MessageEmbedProps {
-  message: Message;
+  message: EmbedMessage;
 }
 
 export function MessageEmbed({ message }: MessageEmbedProps) {
-  const isUser = message.sender === 'user';
+  const isUser = message.role === 'user';
 
-  if (!message.embed) return null;
-
-  const embedData = parseEmbedUrl(message.embed.url);
+  const embedData = parseEmbedUrl(message.url);
 
   return (
     <div className={classNames('flex flex-col', isUser ? 'items-end' : 'items-start')}>
-      {message.content && (
+      {message.title && (
         <div
           className={classNames(
             'max-w-[85%] rounded-2xl px-4 py-2.5 mb-2',
             isUser ? 'bg-white text-hs-text shadow-sm' : 'bg-indigo-50 text-hs-text'
           )}
         >
-          <p className="text-sm leading-relaxed">{message.content}</p>
+          <p className="text-sm leading-relaxed">{message.title}</p>
         </div>
       )}
 
@@ -30,7 +28,7 @@ export function MessageEmbed({ message }: MessageEmbedProps) {
           <div className="aspect-video">
             <iframe
               src={embedData.url}
-              title={message.embed.title || 'Embedded content'}
+              title={message.title || 'Embedded content'}
               className="w-full h-full"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -59,15 +57,17 @@ export function MessageEmbed({ message }: MessageEmbedProps) {
               className="text-hs-primary-600 hover:text-hs-primary-700 text-sm font-medium flex items-center gap-2"
             >
               <span>🔗</span>
-              <span className="truncate">{message.embed.title || embedData.url}</span>
+              <span className="truncate">{message.title || embedData.url}</span>
             </a>
           </div>
         )}
       </div>
 
-      <span className="text-xs text-hs-text-lighter mt-1 px-1">
-        {formatTime(message.timestamp)}
-      </span>
+      {message.timestamp && (
+        <span className="text-xs text-hs-text-lighter mt-1 px-1">
+          {formatTime(message.timestamp)}
+        </span>
+      )}
     </div>
   );
 }
