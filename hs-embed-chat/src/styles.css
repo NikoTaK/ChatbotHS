@@ -6,4 +6,19 @@
   body {
     @apply bg-hs-bg text-hs-text;
   }
+  
+  * {
+    @apply focus-visible:outline-none;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
