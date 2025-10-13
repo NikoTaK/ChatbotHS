@@ -1,6 +1,7 @@
 import { CatalogueMessage, CatalogueItem } from './types';
-import { formatTime, classNames } from './utils';
+import { prettyTime, cls } from './utils';
 import { CatalogueCard } from './CatalogueCard';
+import { Bubble } from './Bubble';
 
 interface MessageCatalogueProps {
   message: CatalogueMessage;
@@ -12,19 +13,22 @@ export function MessageCatalogue({ message }: MessageCatalogueProps) {
   if (!message.items || message.items.length === 0) return null;
 
   return (
-    <div className={classNames('flex flex-col', isUser ? 'items-end' : 'items-start')}>
+    <div className={cls('flex flex-col', isUser ? 'items-end' : 'items-start')}>
       {message.title && (
-        <div
-          className={classNames(
-            'max-w-[85%] rounded-2xl px-4 py-2.5 mb-2',
-            isUser ? 'bg-white text-hs-text shadow-sm' : 'bg-indigo-50 text-hs-text'
-          )}
-        >
-          <p className="text-sm leading-relaxed">{message.title}</p>
+        <div className="max-w-[85%] mb-2">
+          <Bubble role={message.role}>
+            <p className="text-sm leading-relaxed">{message.title}</p>
+          </Bubble>
         </div>
       )}
 
-      <div className="w-full overflow-x-auto pb-2 scrollbar-thin">
+      <div 
+        className="w-full overflow-x-auto pb-2 scrollbar-thin snap-x snap-mandatory"
+        style={{ 
+          scrollbarWidth: 'thin',
+          WebkitOverflowScrolling: 'touch'
+        }}
+      >
         <div className="flex gap-3 px-1">
           {message.items.map((item: CatalogueItem) => (
             <CatalogueCard key={item.id} item={item} />
@@ -34,7 +38,7 @@ export function MessageCatalogue({ message }: MessageCatalogueProps) {
 
       {message.timestamp && (
         <span className="text-xs text-hs-text-lighter mt-1 px-1">
-          {formatTime(message.timestamp)}
+          {prettyTime(message.timestamp)}
         </span>
       )}
     </div>
