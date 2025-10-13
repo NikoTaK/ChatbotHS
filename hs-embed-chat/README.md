@@ -1,13 +1,16 @@
 # HS Embed Chat
 
-A modern chat interface built with React, Vite, TypeScript, and Tailwind CSS.
+A modern, accessible chat widget built with React, Vite, TypeScript, and Tailwind CSS.
 
 ## Features
 
 - ⚡️ Vite for fast development and optimized builds
 - ⚛️ React 18 with TypeScript
 - 🎨 Tailwind CSS with custom HS branding theme
-- 🎯 Ready for deployment on lovable.app
+- ♿️ WCAG 2.1 AA compliant with full keyboard navigation
+- 📱 Responsive design with mobile support
+- 🎯 Embeddable on any website
+- 🎭 Multiple message types (text, gallery, embed, catalogue)
 
 ## Theme Tokens
 
@@ -69,6 +72,63 @@ hs-embed-chat/
 ├── tsconfig.json        # TypeScript configuration
 └── vite.config.ts       # Vite configuration
 ```
+
+## Accessibility
+
+This widget is built with accessibility as a core feature:
+
+### Keyboard Navigation
+
+- **Tab**: Navigate between interactive elements
+- **Enter/Space**: Activate buttons and links
+- **Escape**: Close chat panel and gallery modal
+- **Arrow Keys**: Navigate gallery images (← →)
+- **Shift+Enter**: New line in message input
+- **Enter**: Send message
+
+### Screen Reader Support
+
+- All interactive elements have descriptive `aria-label` attributes
+- Proper semantic HTML structure
+- Focus management in modals
+- Live region announcements for dynamic content
+
+### Visual Accessibility
+
+- **Focus Rings**: Visible focus indicators on all interactive elements (2px ring with offset)
+- **Color Contrast**: WCAG AA compliant contrast ratios (4.5:1 for text)
+- **Reduced Motion**: Respects `prefers-reduced-motion` preference
+  - Disables animations and transitions
+  - Removes smooth scrolling
+- **Responsive Text**: Scales appropriately at all zoom levels
+
+### ARIA Labels
+
+All interactive elements include proper labels:
+- "Open chat" / "Close chat" - Floating button
+- "Send message" - Send button
+- "Close gallery" - Gallery modal close button
+- "Previous image" / "Next image" - Gallery navigation
+- "View image X of Y" - Gallery thumbnails
+
+### Testing
+
+Run Lighthouse accessibility audit:
+```bash
+npm run build
+npm run preview
+# Open Chrome DevTools > Lighthouse > Accessibility
+```
+
+Target score: **≥ 90**
+
+### Best Practices
+
+- Tab trapping in modals prevents focus escape
+- Escape key closes all overlays
+- Focus returns to trigger element on close
+- Skip links for keyboard users
+- Semantic HTML5 elements
 
 ## Deployment
 
