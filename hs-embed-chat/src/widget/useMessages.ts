@@ -55,18 +55,23 @@ export function useMessages() {
   };
 
   const sendUserMessage = (text: string) => {
+    // Add user message
     addMessage({
       type: 'text',
       role: 'user',
       text,
     } as Omit<TextMessage, 'id' | 'timestamp'>);
 
-    // Simulate assistant response
+    // Simulate assistant response acknowledging the message
     setTimeout(() => {
+      const responseText = text.length > 50 
+        ? `I received your message (${text.length} characters). This is a demo response - in production, this would connect to a real assistant.`
+        : `Thanks for your message: "${text}". This is a demo response - in production, this would connect to a real assistant.`;
+      
       addMessage({
         type: 'text',
         role: 'assistant',
-        text: 'Thanks for your message! This is a demo response.',
+        text: responseText,
       } as Omit<TextMessage, 'id' | 'timestamp'>);
     }, 1000);
   };
