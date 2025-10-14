@@ -175,11 +175,121 @@ export function useMessages() {
       text,
     } as Omit<TextMessage, 'id' | 'timestamp'>);
 
-    // Simulate assistant response acknowledging the message
+    // Simulate assistant response based on keywords
     setTimeout(() => {
+      const trimmedText = text.trim().toLowerCase();
+      
+      // Check for "catalogue" keyword
+      if (trimmedText === 'catalogue' || trimmedText === 'catalog') {
+        addMessage({
+          type: 'catalogue',
+          role: 'assistant',
+          title: 'Here are our available programmes:',
+          items: [
+            {
+              id: 'prog1',
+              title: 'Computer Science',
+              subtitle: 'Master\'s Degree',
+              description: 'Build cutting-edge software and systems with industry leaders',
+              image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/computer-science',
+            },
+            {
+              id: 'prog2',
+              title: 'Data Science',
+              subtitle: 'Master\'s Degree',
+              description: 'Master AI, machine learning, and big data analytics',
+              image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/data-science',
+            },
+            {
+              id: 'prog3',
+              title: 'Cyber Security',
+              subtitle: 'Master\'s Degree',
+              description: 'Protect digital infrastructure and combat cyber threats',
+              image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/cyber-security',
+            },
+            {
+              id: 'prog4',
+              title: 'Digital Marketing',
+              subtitle: 'Master\'s Degree',
+              description: 'Drive growth through data-driven marketing strategies',
+              image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/digital-marketing',
+            },
+            {
+              id: 'prog5',
+              title: 'Product Management',
+              subtitle: 'Master\'s Degree',
+              description: 'Lead product development from concept to launch',
+              image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/product-management',
+            },
+            {
+              id: 'prog6',
+              title: 'FinTech',
+              subtitle: 'Master\'s Degree',
+              description: 'Innovate at the intersection of finance and technology',
+              image: 'https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/fintech',
+            },
+            {
+              id: 'prog7',
+              title: 'Interaction Design',
+              subtitle: 'Master\'s Degree',
+              description: 'Create intuitive and beautiful user experiences',
+              image: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/interaction-design',
+            },
+            {
+              id: 'prog8',
+              title: 'High-Tech Entrepreneurship',
+              subtitle: 'Master\'s Degree',
+              description: 'Launch and scale your own tech startup',
+              image: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=400&q=80',
+              ctaLabel: 'Learn more',
+              ctaHref: 'https://harbour.space/programmes/entrepreneurship',
+            },
+          ],
+        } as Omit<CatalogueMessage, 'id' | 'timestamp'>);
+        return;
+      }
+      
+      // Check for embeddable URLs (YouTube, Vimeo, Google Maps)
+      const urlRegex = /(https?:\/\/[^\s]+)/;
+      const urlMatch = text.match(urlRegex);
+      
+      if (urlMatch) {
+        const url = urlMatch[0];
+        const isYouTube = url.includes('youtube.com') || url.includes('youtu.be');
+        const isVimeo = url.includes('vimeo.com');
+        const isMaps = url.includes('google.com/maps') || url.includes('goo.gl/maps');
+        
+        if (isYouTube || isVimeo || isMaps) {
+          const embedTitle = isYouTube ? 'YouTube video' : isVimeo ? 'Vimeo video' : 'Google Maps location';
+          
+          addMessage({
+            type: 'embed',
+            role: 'assistant',
+            title: `Here's your ${embedTitle}:`,
+            url: url,
+          } as Omit<EmbedMessage, 'id' | 'timestamp'>);
+          return;
+        }
+      }
+      
+      // Default text response
       const responseText = text.length > 50 
-        ? `I received your message (${text.length} characters). This is a demo response - in production, this would connect to a real assistant.`
-        : `Thanks for your message: "${text}". This is a demo response - in production, this would connect to a real assistant.`;
+        ? `I received your message (${text.length} characters). Try typing "catalogue" or paste a YouTube/Vimeo/Maps link!`
+        : `Got it: "${text}". Try typing "catalogue" or paste a YouTube/Vimeo/Maps link!`;
       
       addMessage({
         type: 'text',
