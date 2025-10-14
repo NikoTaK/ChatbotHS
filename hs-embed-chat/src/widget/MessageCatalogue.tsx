@@ -37,7 +37,7 @@ export function MessageCatalogue({ message }: MessageCatalogueProps) {
       </div>
 
       {message.timestamp && (
-        <span className="text-xs text-hs-text-lighter mt-1 px-1">
+        <span className="text-xs text-neutral-500 mt-1 px-1">
           {prettyTime(message.timestamp)}
         </span>
       )}

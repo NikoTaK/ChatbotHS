@@ -20,7 +20,7 @@ export function MessageEmbed({ message }: MessageEmbedProps) {
         </div>
       )}
 
-      <div className="max-w-[85%] w-full rounded-xl overflow-hidden shadow-md bg-white">
+      <div className="max-w-[85%] w-full rounded-2xl overflow-hidden shadow-md bg-white">
         <div 
           className="aspect-video w-full"
           dangerouslySetInnerHTML={{ __html: embedHTML }}
@@ -28,7 +28,7 @@ export function MessageEmbed({ message }: MessageEmbedProps) {
       </div>
 
       {message.timestamp && (
-        <span className="text-xs text-hs-text-lighter mt-1 px-1">
+        <span className="text-xs text-neutral-500 mt-1 px-1">
           {prettyTime(message.timestamp)}
         </span>
       )}

@@ -14,7 +14,7 @@ export function Bubble({ role, children }: BubbleProps) {
     <div
       className={cls(
         'rounded-2xl px-4 py-3 shadow-sm break-words',
-        isUser ? 'bg-white text-hs-text' : 'bg-indigo-50 text-hs-text'
+        isUser ? 'bg-white text-neutral-900' : 'bg-indigo-50 text-neutral-900'
       )}
     >
       {children}

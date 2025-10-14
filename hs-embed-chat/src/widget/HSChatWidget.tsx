@@ -24,7 +24,7 @@ export function HSChatWidget() {
     return (
       <div key={message.id} className="flex gap-3 mb-4">
         {!isUser && (
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-br from-hs-primary-600 to-hs-primary-400 flex items-center justify-center text-white text-xs font-semibold">
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white flex items-center justify-center text-indigo-600 text-xs font-bold shadow-sm">
             HS
           </div>
         )}
@@ -37,8 +37,8 @@ export function HSChatWidget() {
         </div>
 
         {isUser && (
-          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center">
-            <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-neutral-200 flex items-center justify-center">
+            <svg className="w-5 h-5 text-neutral-600" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
             </svg>
           </div>
@@ -48,15 +48,15 @@ export function HSChatWidget() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-hs-bg rounded-2xl shadow-xl overflow-hidden">
+    <div className="flex flex-col h-full bg-neutral-50 rounded-2xl shadow-md overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-hs-primary-600 to-hs-primary-500 text-white px-6 py-4 flex items-center gap-3">
-        <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-sm font-bold">
+      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 py-4 flex items-center gap-3">
+        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-xs font-bold text-indigo-600">
           HS
         </div>
         <div>
           <h2 className="font-semibold text-base">Harbour.Space Assistant</h2>
-          <p className="text-xs text-white/80">Always here to help</p>
+          <p className="text-xs text-white/90">We're here to help</p>
         </div>
       </div>
 

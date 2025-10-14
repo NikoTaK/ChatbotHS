@@ -33,7 +33,7 @@ export function MessageGallery({ message }: MessageGalleryProps) {
             <button
               key={image.id}
               onClick={() => setSelectedIndex(index)}
-              className="aspect-square rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-hs-primary-500 focus:ring-offset-2 transition-transform hover:scale-105 active:scale-95"
+              className="aspect-square rounded-lg overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-transform hover:scale-105 active:scale-95"
               aria-label={`View image ${index + 1} of ${message.images.length}`}
             >
               <img
@@ -46,7 +46,7 @@ export function MessageGallery({ message }: MessageGalleryProps) {
         </div>
 
         {message.timestamp && (
-          <span className="text-xs text-hs-text-lighter mt-1 px-1">
+          <span className="text-xs text-neutral-500 mt-1 px-1">
             {prettyTime(message.timestamp)}
           </span>
         )}

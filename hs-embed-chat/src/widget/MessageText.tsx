@@ -22,7 +22,7 @@ function linkifyText(text: string): (string | JSX.Element)[] {
           href={part}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-hs-primary-600 hover:text-hs-primary-700 underline"
+          className="text-indigo-600 hover:text-indigo-700 underline"
         >
           {part}
         </a>
@@ -46,7 +46,7 @@ export function MessageText({ message }: MessageTextProps) {
         </Bubble>
       </div>
       {message.timestamp && (
-        <span className="text-xs text-hs-text-lighter mt-1 px-1">
+        <span className="text-xs text-neutral-500 mt-1 px-1">
           {prettyTime(message.timestamp)}
         </span>
       )}
