@@ -9,6 +9,7 @@ import openai
 import os
 from dotenv import load_dotenv
 from datetime import datetime
+import time
 
 # Load environment variables
 load_dotenv()
@@ -23,6 +24,15 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 SYSTEM_PROMPT = """You are a helpful assistant for Harbour.Space University in Barcelona. 
 You help prospective students learn about programmes, admissions, scholarships, and campus life.
 Be friendly, concise, and informative. When relevant, suggest they explore the programme catalogue by typing "catalogue"."""
+
+# Fallback responses for common questions when rate limited
+FALLBACK_RESPONSES = {
+    'programmes': "Harbour.Space offers Master's degrees in Computer Science, Data Science, Cyber Security, and Digital Marketing. Type 'catalogue' to see all programmes!",
+    'apply': "To apply to Harbour.Space, visit our admissions page. You'll need: academic transcripts, CV, motivation letter, and English proficiency proof. Application deadlines vary by programme.",
+    'location': "Harbour.Space University is located in Barcelona, Spain - one of Europe's most vibrant tech hubs!",
+    'scholarships': "We offer various scholarships including merit-based awards and industry partnerships. Contact our admissions team for details.",
+    'default': "I'm currently experiencing high traffic. Type 'catalogue' to see our programmes, or try asking about: programmes, admissions, location, or scholarships."
+}
 
 # Programme catalogue data
 PROGRAMMES = [
@@ -129,13 +139,32 @@ def chat():
         messages.extend(conversation_history)
         messages.append({'role': 'user', 'content': user_message})
         
-        # Call OpenAI API
-        response = openai.ChatCompletion.create(
-            model='gpt-4o-mini',  # or 'gpt-4' for better quality
-            messages=messages,
-            temperature=0.7,
-            max_tokens=500
-        )
+        # Call OpenAI API with retry logic
+        max_retries = 2
+        retry_delay = 1
+        
+        for attempt in range(max_retries):
+            try:
+                response = openai.ChatCompletion.create(
+                    model='gpt-3.5-turbo',  # Better rate limits than gpt-4o-mini
+                    messages=messages,
+                    temperature=0.7,
+                    max_tokens=300
+                )
+                break
+            except openai.error.RateLimitError:
+                if attempt < max_retries - 1:
+                    time.sleep(retry_delay)
+                    retry_delay *= 2
+                else:
+                    # Use fallback response
+                    fallback_msg = get_fallback_response(user_message)
+                    return jsonify({
+                        'response': fallback_msg,
+                        'type': 'text'
+                    })
+            except Exception as e:
+                raise e
         
         assistant_message = response.choices[0].message.content
         
@@ -151,11 +180,11 @@ def chat():
             'type': 'text'
         }), 401
     except openai.error.RateLimitError:
+        fallback_msg = get_fallback_response(data.get('message', ''))
         return jsonify({
-            'error': 'Rate limit exceeded',
-            'response': 'Sorry, too many requests. Please try again in a moment.',
+            'response': fallback_msg + '\n\n⏳ (Rate limit - please wait 20 seconds between messages)',
             'type': 'text'
-        }), 429
+        })
     except Exception as e:
         app.logger.error(f'Chat error: {str(e)}')
         return jsonify({
@@ -163,6 +192,22 @@ def chat():
             'response': 'Sorry, I encountered an error. Please try again.',
             'type': 'text'
         }), 500
+
+
+def get_fallback_response(message):
+    """Get a fallback response when OpenAI is rate limited"""
+    message_lower = message.lower()
+    
+    if any(word in message_lower for word in ['programme', 'program', 'course', 'study', 'degree']):
+        return FALLBACK_RESPONSES['programmes']
+    elif any(word in message_lower for word in ['apply', 'application', 'admission', 'enroll']):
+        return FALLBACK_RESPONSES['apply']
+    elif any(word in message_lower for word in ['where', 'location', 'barcelona', 'campus']):
+        return FALLBACK_RESPONSES['location']
+    elif any(word in message_lower for word in ['scholarship', 'funding', 'financial', 'tuition']):
+        return FALLBACK_RESPONSES['scholarships']
+    else:
+        return FALLBACK_RESPONSES['default']
 
 
 @app.route('/api/health', methods=['GET'])
