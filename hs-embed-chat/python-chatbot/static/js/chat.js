@@ -5,6 +5,7 @@ const sendButton = document.getElementById('sendButton');
 const imageInput = document.getElementById('imageInput');
 const attachButton = document.getElementById('attachButton');
 const imagePreview = document.getElementById('imagePreview');
+const clearChatButton = document.getElementById('clearChatButton');
 
 // Store conversation history
 let conversationHistory = [];
@@ -142,6 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         });
+    }
+
+    // Clear chat button
+    if (clearChatButton) {
+        clearChatButton.addEventListener('click', clearChat);
     }
 });
 
@@ -311,7 +317,7 @@ function showLoading() {
     
     const bubble = document.createElement('div');
     bubble.className = 'loading-bubble';
-    bubble.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div>';
+    bubble.innerHTML = '<span class="typing-text">HS is typing</span><div class="loading-dots"><span></span><span></span><span></span></div>';
     
     content.appendChild(bubble);
     messageDiv.appendChild(avatar);
@@ -362,6 +368,15 @@ function addCatalogueMessage(title, programmes) {
                 <p>${prog.description}</p>
             </div>
         `;
+        
+        // Make card clickable - open the programme URL in new tab
+        if (prog.url) {
+            card.style.cursor = 'pointer';
+            card.addEventListener('click', () => {
+                window.open(prog.url, '_blank');
+            });
+        }
+        
         cardsContainer.appendChild(card);
     });
     
@@ -428,4 +443,40 @@ function extractVimeoId(url) {
 // Scroll to bottom
 function scrollToBottom() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Clear chat function
+function clearChat() {
+    // Show confirmation dialog
+    const confirmed = confirm('Are you sure you want to clear the conversation? This cannot be undone.');
+    
+    if (!confirmed) {
+        return;
+    }
+    
+    // Clear conversation history
+    conversationHistory = [];
+    activeScenario = '';
+    
+    // Clear the chat messages UI
+    chatMessages.innerHTML = '';
+    
+    // Add welcome message back
+    const welcomeMessage = document.createElement('div');
+    welcomeMessage.className = 'message assistant-message';
+    welcomeMessage.innerHTML = `
+        <div class="message-avatar">HS</div>
+        <div class="message-content">
+            <div class="message-bubble">
+                Welcome to Harbour.Space! I'm your HS assistant. Ask me about programmes, admissions, scholarships, or campus life.
+            </div>
+        </div>
+    `;
+    chatMessages.appendChild(welcomeMessage);
+    
+    // Clear any pending image
+    clearPreview();
+    
+    // Focus on input
+    messageInput.focus();
 }

@@ -71,6 +71,7 @@ PROGRAMMES = [
         'subtitle': "Master's Degree",
         'description': 'Build cutting-edge software and systems with industry leaders',
         'image': 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=400&q=80',
+        'url': 'https://harbour.space/barcelona/master/computer-science',
     },
     {
         'id': 'prog2',
@@ -78,6 +79,7 @@ PROGRAMMES = [
         'subtitle': "Master's Degree",
         'description': 'Master AI, machine learning, and big data analytics',
         'image': 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&q=80',
+        'url': 'https://harbour.space/barcelona/master/data-science',
     },
     {
         'id': 'prog3',
@@ -85,6 +87,7 @@ PROGRAMMES = [
         'subtitle': "Master's Degree",
         'description': 'Protect digital infrastructure and combat cyber threats',
         'image': 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=400&q=80',
+        'url': 'https://harbour.space/barcelona/master/cyber-security',
     },
     {
         'id': 'prog4',
@@ -92,6 +95,7 @@ PROGRAMMES = [
         'subtitle': "Master's Degree",
         'description': 'Drive growth through data-driven marketing strategies',
         'image': 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&q=80',
+        'url': 'https://harbour.space/barcelona/master/digital-marketing',
     },
 ]
 
