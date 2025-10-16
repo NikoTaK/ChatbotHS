@@ -276,6 +276,88 @@ body {
     cursor: not-allowed;
 }
 
+/* Attach (paperclip) button */
+.attach-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
+    color: #4b5563;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+    flex-shrink: 0;
+}
+
+.attach-button:hover {
+    background: #f3f4f6;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+/* Drag-and-drop visual cue */
+.chat-container.drag-over {
+    outline: 2px dashed #6366f1;
+    outline-offset: -6px;
+}
+
+.image-preview {
+    display: none; /* shown via JS */
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.image-preview .thumb {
+    flex: 0 0 auto;
+}
+
+.image-preview .thumb img {
+    max-height: 96px;
+    max-width: 160px;
+    width: auto;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: block;
+}
+
+.image-preview .remove-btn {
+    border: 1px solid #e5e7eb;
+    background: #fff;
+    color: #374151;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.image-preview .remove-btn:hover {
+    background: #f9fafb;
+}
+
+.message .message-content > img {
+    max-width: 240px;
+    max-height: 180px;
+    width: auto;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    display: block;
+}
+
+/* Right-align user images like user text bubbles */
+.user-message .message-content {
+    display: flex;
+}
+.user-message .message-content > img {
+    margin-left: auto;
+}
+
 .chat-hint {
     background: white;
     padding: 0 16px 12px;
