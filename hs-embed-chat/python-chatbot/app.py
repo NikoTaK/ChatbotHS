@@ -202,6 +202,7 @@ def chat():
                 q = q.split(':', 1)[1].strip() or user_message
             urls_in_text = extract_urls(user_message)
             app.logger.info(f"[{rid}] retrieval try force={force_web} urls_in_text={len(urls_in_text)} q='{q}'")
+            # Always attempt to collect relevant pages for any text query
             docs = collect_web_docs(web_urls=urls_in_text if urls_in_text else None, query=(None if urls_in_text else q), max_sources=3)
             web_doc = choose_best_doc(docs, q)
             # If selected doc is too short, try targeted fallbacks
@@ -226,6 +227,10 @@ def chat():
                     if best_extra and best_extra.get('url') != (web_doc.get('url') if web_doc else None):
                         web_doc = best_extra
                         app.logger.info(f"[{rid}] web doc replaced by fallback url={web_doc.get('url')}")
+            # If after fallbacks the doc is still too short, skip web mode and let model generate
+            if web_doc and len((web_doc.get('text') or '')) < 350:
+                app.logger.info(f"[{rid}] web doc too short -> skip web mode url={web_doc.get('url')} len={len(web_doc.get('text') or '')}")
+                web_doc = None
             if web_doc:
                 web_excerpt = (web_doc.get('text') or '')[:2400]
                 app.logger.info(f"[{rid}] web doc chosen len={len(web_excerpt)} url={web_doc.get('url')}")

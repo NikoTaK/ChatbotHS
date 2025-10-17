@@ -176,6 +176,8 @@ async function sendMessage() {
         addMessage(message, 'user');
     }
     if (imageDataUrl) addImageMessage(imageDataUrl, 'user');
+    // Hide the preview immediately after sending (do not wait for network)
+    clearPreview();
     
     // Clear input
     messageInput.value = '';
@@ -251,6 +253,7 @@ async function sendMessage() {
     } finally {
         sendButton.disabled = false;
         messageInput.focus();
+        // Safety: ensure preview is cleared even if early clear didn't execute
         clearPreview();
     }
 }

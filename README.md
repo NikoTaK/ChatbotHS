@@ -4,26 +4,32 @@ A simple chatbot built with Python Flask and OpenAI's GPT API for Harbour.Space 
 
 ## 🎯 Features
 
-- **ChatGPT Integration**: Intelligent responses using OpenAI's API
-- **Keyword Routing**: Type "catalogue" to see programmes
-- **URL Embedding**: Paste YouTube/Vimeo links to embed videos
-- **Clean UI**: Modern, responsive design with Harbour.Space branding
-- **Conversation History**: Maintains context across messages
+- **ChatGPT Integration**: Intelligent responses using OpenAI's API(Nikita)
+- **Always-on Site Search**: Tries to find info on harbour.space for any text request; if a page is used, appends a single `Source: <url>` at the end(Slava)
+- **Targeted Fallbacks**: Admissions, Scholarships, Bachelors/Programmes pages are tried when search is weak(Slava)
+- **Image Messages**: Attach image, inline preview auto-clears after sending(Slava)
+- **Keyword Routing**: Type `catalogue` to see programmes(Nikita)
+- **URL Embedding**: Paste YouTube/Vimeo links to embed videos(Nikita)
+- **Structured Logging**: Clear logs for search/fetch/reader and model calls(Slava)
+- **Clean UI**: Modern, responsive design with Harbour.Space branding(Nikita, Slava)
+- **Conversation History**: Maintains context across messages(Nikita)
 
 ## 📁 Project Structure
 
 ```
-python-chatbot/
-├── app.py                 # Flask backend (main application)
-├── requirements.txt       # Python dependencies
-├── .env.example          # Environment variables template
-├── templates/
-│   └── index.html        # Main HTML page
-└── static/
-    ├── css/
-    │   └── style.css     # Styling
-    └── js/
-        └── chat.js       # Frontend JavaScript
+ChatbotHS/
+├── hs-embed-chat/
+│   └── python-chatbot/
+│       ├── app.py                 # Flask backend (main application)
+│       ├── requirements.txt       # Python dependencies
+│       ├── templates/
+│       │   └── index.html         # Main HTML page
+│       └── static/
+│           ├── css/
+│           │   └── style.css      # Styling
+│           └── js/
+│               └── chat.js        # Frontend JavaScript
+└── README.md
 ```
 
 ## 🚀 Quick Start
@@ -38,8 +44,8 @@ python3 --version
 ### 2. Create Virtual Environment
 
 ```bash
-# Navigate to the python-chatbot directory
-cd python-chatbot
+# Navigate to the backend directory
+cd hs-embed-chat/python-chatbot
 
 # Create virtual environment
 python3 -m venv venv
@@ -59,13 +65,12 @@ pip install -r requirements.txt
 
 ### 4. Configure API Key
 
-```bash
-# Copy the example env file
-cp .env.example .env
+Create a `.env` file in `hs-embed-chat/python-chatbot/` with your OpenAI key.
 
-# Edit .env and add your OpenAI API key
-# Get your key from: https://platform.openai.com/api-keys
+```env
+OPENAI_API_KEY=sk-proj-your-actual-key-here
 ```
+Get your key from: https://platform.openai.com/api-keys
 
 Your `.env` file should look like:
 ```
@@ -78,7 +83,7 @@ OPENAI_API_KEY=sk-proj-your-actual-key-here
 python app.py
 ```
 
-The chatbot will start at: **http://localhost:5000**
+The chatbot will start at: **http://localhost:8080**
 
 ## 🧪 Testing
 
@@ -94,6 +99,13 @@ Try these commands in the chatbot:
 
 3. **URL Embedding:**
    - Paste: `https://www.youtube.com/watch?v=dQw4w9WgXcQ` → Embeds video
+
+## 🌐 Web Retrieval Behavior
+
+- **Always tries site search** for any text message, prioritizing `harbour.space`.
+- If a page is confidently selected, its text is used to answer and the reply ends with a single `Source: <url>`.
+- If search fails or the page text is too short, the bot generates a general answer without a source link.
+- You can still force search with prefixes: `web:`, `find:`, `lookup:`, `search:`, `найди:`.
 
 ## 📚 Code Explanation (For Learning)
 
@@ -195,7 +207,14 @@ pip install -r requirements.txt
 ### "OpenAI API key not configured"
 - Check that `.env` file exists
 - Verify API key is correct (starts with `sk-`)
-- Make sure `.env` is in the same directory as `app.py`
+- Make sure `.env` is in the same directory as `app.py` (i.e. `hs-embed-chat/python-chatbot/`)
+
+### Logs and diagnostics
+- The server prints helpful lines:
+  - `[search] ddg/bing ...`, `[search] using seed urls ...`
+  - `[fetch] status=...` and `[fetch] reader status=...` for readability proxy
+  - `[rid] web doc chosen ... url=...` when a page is used
+- If a page is too short you will see: `[web doc too short -> skip web mode ...]`
 
 ### "401 Authentication Error"
 - Your API key is invalid or expired
